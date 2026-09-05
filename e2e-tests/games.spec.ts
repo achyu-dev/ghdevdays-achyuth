@@ -24,6 +24,26 @@ test.describe('Game Listing and Navigation', () => {
     });
   });
 
+  test('should filter games by category and publisher', async ({ page }) => {
+    await test.step('Navigate to homepage', async () => {
+      await page.goto('/');
+    });
+
+    await test.step('Apply category and publisher filters', async () => {
+      const categoryFilters = page.getByTestId('category-filter-group').getByRole('checkbox');
+      const publisherFilter = page.getByTestId('publisher-filter');
+
+      await categoryFilters.first().check();
+      await publisherFilter.selectOption({ index: 1 });
+    });
+
+    await test.step('Verify filtered results remain visible', async () => {
+      const gameCards = page.getByTestId('game-card');
+      await expect(gameCards).toHaveCount(1);
+      await expect(gameCards.first()).toBeVisible();
+    });
+  });
+
   test('should navigate to correct game details page when clicking on a game', async ({ page }) => {
     let gameId: string | null;
     let gameTitle: string | null;

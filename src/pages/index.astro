@@ -5,10 +5,16 @@ import PageHero from '../components/PageHero.astro';
 import EmptyState from '../components/EmptyState.astro';
 import { getDatabase } from '../lib/db';
 import { getAllGames } from '../lib/games';
+import { categories, publishers } from '../../db/schema';
 
 export const prerender = true;
 
-const games = await getAllGames(getDatabase());
+const db = getDatabase();
+const [games, categoryRows, publisherRows] = await Promise.all([
+  getAllGames(db),
+  db.select().from(categories).orderBy(categories.name),
+  db.select().from(publishers).orderBy(publishers.name),
+]);
 ---
 
 <Layout title="Tailspin Toys - Crowdfunding your new favorite game!">
@@ -20,6 +26,42 @@ const games = await getAllGames(getDatabase());
 
     <div>
       <h2 class="text-2xl font-medium mb-6 text-slate-100">Featured Games</h2>
+
+      <form class="mb-8 rounded-xl border border-slate-700 bg-slate-800/60 p-4 shadow-lg" aria-label="Filter games" data-testid="game-filters">
+        <div class="grid gap-4 md:grid-cols-2">
+          <fieldset>
+            <legend class="mb-2 text-sm font-semibold text-slate-200">Categories</legend>
+            <div class="max-h-56 space-y-2 overflow-auto rounded-lg border border-slate-700 bg-slate-900/60 p-3" data-testid="category-filter-group">
+              {categoryRows.map((category) => (
+                <label class="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1 text-slate-200 transition-colors hover:bg-slate-700/70">
+                  <input
+                    type="checkbox"
+                    name="category"
+                    value={category.id}
+                    class="h-4 w-4 rounded border-slate-600 bg-slate-900 text-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    data-testid={`category-filter-${category.id}`}
+                  />
+                  <span>{category.name}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <label class="block">
+            <span class="mb-2 block text-sm font-semibold text-slate-200">Publisher</span>
+            <select
+              name="publisher"
+              class="w-full rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              data-testid="publisher-filter"
+            >
+              <option value="">All publishers</option>
+              {publisherRows.map((publisher) => (
+                <option value={publisher.id}>{publisher.name}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </form>
 
       {games.length === 0 ? (
         <EmptyState text="No games available at the moment." />
