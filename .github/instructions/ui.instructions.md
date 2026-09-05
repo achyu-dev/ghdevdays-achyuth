@@ -20,6 +20,14 @@ Refer to technology-specific instruction files:
 
 ## Core Principles
 
+### Comment and documentation standards
+
+- Comments should explain **why** a decision exists, not restate what the code already says.
+- Treat comments as living documentation: remove or update them when the related code changes.
+- Favor clear names and types over comments for mechanics that are obvious from the code itself.
+- In `db/` and `src/lib/`, every exported function must include TSDoc/JSDoc that explains its purpose, parameters, and return value; keep injectable `db` arguments documented so the testing pattern is obvious.
+- Reusable `.astro` components must document their `Props` interface so the component contract is readable without opening the implementation.
+
 ### Testability
 
 - Every interactive element MUST include a `data-testid` attribute
