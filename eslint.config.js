@@ -39,5 +39,16 @@ export default [
     languageOptions: {
       parser: tseslint.parser,
     },
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": [
+        "error",
+        {
+          allowExpressions: true,
+          allowHigherOrderFunctions: true,
+          allowTypedFunctionExpressions: true,
+        },
+      ],
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+    },
   },
 ];

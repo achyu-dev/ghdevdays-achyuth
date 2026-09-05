@@ -38,7 +38,7 @@ The app's data lives in a local SQLite database accessed through **Drizzle ORM**
 
 ## Data-Access Helpers (injectable db)
 
-Helpers take the `db` instance as their first argument so they work both with the real client (in pages) and an in-memory client (in tests):
+Helpers take the `db` instance as their first argument so they work both with the real client (in pages) and an in-memory client (in tests). Document each exported helper with TSDoc/JSDoc that covers what it does, its parameters, and its return value:
 
 ```ts
 import { asc, count, eq } from 'drizzle-orm';
